@@ -1,0 +1,18 @@
+# Visual Studio / .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
