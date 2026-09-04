@@ -1,3 +1,10 @@
+-- ================================
+-- RaceDay Database Script
+-- ================================
+-- This script creates the full RaceDay database: 7 entities
+-- (Users, Organisers, Participants, Events, Categories,
+-- Enrolments, Results) plus sample data.
+
 -- Drop and recreate the database cleanly
 IF DB_ID('RaceDay') IS NOT NULL
 BEGIN
@@ -11,6 +18,10 @@ GO
 USE RaceDay;
 GO
 
+-- ================================
+-- Users
+-- Base table for anyone with a login (Organiser or Participant).
+-- ================================
 CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     FirstName VARCHAR(50) NOT NULL,
@@ -19,18 +30,32 @@ CREATE TABLE Users (
     Password VARCHAR(255) NOT NULL
 );
 
+-- ================================
+-- Organisers
+-- Specialisation of Users. Only Organisers can create Events.
+-- ================================
 CREATE TABLE Organisers (
     OrganiserID INT PRIMARY KEY,
     UserID INT NOT NULL UNIQUE,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+-- ================================
+-- Participants
+-- Specialisation of Users. Only Participants can Enrol in Events.
+-- ================================
 CREATE TABLE Participants (
     ParticipantID INT PRIMARY KEY,
     UserID INT NOT NULL UNIQUE,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
+-- ================================
+-- Events
+-- Created by an Organiser. RouteDescription is stored as a plain
+-- field rather than its own table, since live weather/route data
+-- is fetched externally rather than stored here.
+-- ================================
 CREATE TABLE Events (
     EventID INT IDENTITY(1,1) PRIMARY KEY,
     EventName VARCHAR(100) NOT NULL,
@@ -41,6 +66,10 @@ CREATE TABLE Events (
     FOREIGN KEY (OrganiserID) REFERENCES Organisers(OrganiserID)
 );
 
+-- ================================
+-- Categories
+-- Each category (e.g. "10km", "Half Marathon") belongs to one Event.
+-- ================================
 CREATE TABLE Categories (
     CategoryID INT IDENTITY(1,1) PRIMARY KEY,
     CategoryName VARCHAR(50) NOT NULL,
@@ -48,6 +77,12 @@ CREATE TABLE Categories (
     FOREIGN KEY (EventID) REFERENCES Events(EventID)
 );
 
+-- ================================
+-- Enrolments
+-- Junction table resolving the many-to-many relationship between
+-- Participants and Events (a participant can enrol in many events,
+-- an event can have many participants).
+-- ================================
 CREATE TABLE Enrolments (
     EnrolmentID INT IDENTITY(1,1) PRIMARY KEY,
     ParticipantID INT NOT NULL,
@@ -59,6 +94,11 @@ CREATE TABLE Enrolments (
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
 
+-- ================================
+-- Results
+-- One result per Enrolment (EnrolmentID is UNIQUE below), recorded
+-- by the Organiser once a participant finishes.
+-- ================================
 CREATE TABLE Results (
     ResultID INT IDENTITY(1,1) PRIMARY KEY,
     EnrolmentID INT NOT NULL UNIQUE,
@@ -69,6 +109,8 @@ CREATE TABLE Results (
 
 -- ================================
 -- Sample Data
+-- Meets the brief's minimum: 2 Organisers, 2 Participants,
+-- 3 Events, categories per event, and sample enrolments.
 -- ================================
 
 USE RaceDay;
