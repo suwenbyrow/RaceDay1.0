@@ -1,0 +1,43 @@
+name: RaceDay Part 1 - File Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-required-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify required documentation files exist
+        run: |
+          echo "Checking for required Part 1 files..."
+
+          FILES=(
+            "docs/RaceDay_ERD.png"
+            "docs/API_Endpoint_Plan.pdf"
+            "docs/RaceDay_Database.sql"
+            "README.md"
+          )
+
+          MISSING=0
+
+          for FILE in "${FILES[@]}"; do
+            if [ -f "$FILE" ]; then
+              echo "Found: $FILE"
+            else
+              echo "MISSING: $FILE"
+              MISSING=1
+            fi
+          done
+
+          if [ $MISSING -eq 1 ]; then
+            echo "One or more required files are missing."
+            exit 1
+          else
+            echo "All required Part 1 files are present."
+          fi
