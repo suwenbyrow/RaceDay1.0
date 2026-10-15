@@ -86,5 +86,5 @@ A GitHub Actions workflow (.github/workflows/part1-check.yml) runs on every push
 
 
 
-\[Add your YouTube link here once recorded]
+\[https://youtu.be/KTR9H3HJSFQ]
 
