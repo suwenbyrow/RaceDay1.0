@@ -88,3 +88,59 @@ A GitHub Actions workflow (.github/workflows/part1-check.yml) runs on every push
 
 \[https://youtu.be/KTR9H3HJSFQ]
 
+\## Part 2: RESTful API
+
+
+
+The Part 2 API is in the `RaceDayAPI` folder. It is an ASP.NET Core Web API (.NET 10) that uses Entity Framework Core with SQL Server, built to the endpoint plan in `docs/API\_Endpoint\_Plan.pdf`. Logout (`POST /api/auth/logout`) was added to the plan, because session login needs a way to end the session.
+
+
+
+\### Roles
+
+
+
+\*\*Organiser\*\*
+
+\- Creates, updates and deletes their own events
+
+\- Adds, renames and deletes categories on their own events
+
+\- Records results for participants enrolled in their own events
+
+
+
+\*\*Participant\*\*
+
+\- Views events, categories and event results
+
+\- Enrols in an event (one enrolment per event, in a category of that event) and cancels their own enrolment
+
+\- Views their own enrolments and their own race history
+
+
+
+Both roles can register, log in, log out, and view or update their own profile.
+
+
+
+\### Authentication
+
+
+
+Passwords are stored as salted hashes. Logging in starts a cookie session that holds the user's ID and role. Requests with no session get 401, and requests from the wrong role (or the wrong owner) get 403.
+
+
+
+\### Setup and run
+
+
+
+1\. Install the .NET 10 SDK and SQL Server Express (with SSMS).
+
+2\. Open `docs/RaceDay\_Database.sql` in SSMS, connect to `localhost\\SQLEXPRESS`, and run it. This creates the `RaceDay` database with sample data.
+
+3\. Check the connection string in `RaceDayAPI/appsettings.json` matches your server name.
+
+4\. In a terminal:
+
